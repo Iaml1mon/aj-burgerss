@@ -17,110 +17,101 @@ interface FormErrors {
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
 const Contact = () => {
-  const [formData, setFormData] = useState<FormData>({ name: "", email: "", message: "" });
+  const initialFormData: FormData = { name: "", email: "", message: "" };
+  const initialStatus: FormStatus = "idle";
+
+  const [formData, setFormData] = useState<FormData>(initialFormData);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [status, setStatus] = useState<FormStatus>("idle");
+  const [status, setStatus] = useState<FormStatus>(initialStatus);
 
   const contactInfo = [
     {
       icon: <FaPhone className="text-2xl" />,
       title: "Phone",
       details: "0481 833 224",
-      link: "tel:0481833224"
+      link: "tel:0481833224",
     },
     {
       icon: <FaMapMarkerAlt className="text-2xl" />,
       title: "Sefton Location",
       details: "107 Carlingford St, Sefton NSW",
-      link: "https://www.google.com/maps/search/?api=1&query=107+Carlingford+St,+Sefton+NSW,+Australia"
+      link: "https://www.google.com/maps/search/?api=1&query=107+Carlingford+St,+Sefton+NSW,+Australia",
     },
     {
       icon: <FaMapMarkerAlt className="text-2xl" />,
       title: "Lidcombe Location",
       details: "90 Parramatta Rd, Lidcombe NSW",
-      link: "https://www.google.com/maps/search/?api=1&query=90+Parramatta+Rd,+Lidcombe+NSW,+Australia"
+      link: "https://www.google.com/maps/search/?api=1&query=90+Parramatta+Rd,+Lidcombe+NSW,+Australia",
     },
     {
       icon: <FaInstagram className="text-2xl" />,
       title: "Instagram",
       details: "@ajburgers_",
-      link: "https://www.instagram.com/ajburgers_/"
-    }
+      link: "https://www.instagram.com/ajburgers_/",
+    },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [id]: value }));
-    // Clear the error for this field when the user starts typing
+    setFormData((prev) => ({ ...prev, [id]: value }));
+
     if (errors[id as keyof FormErrors]) {
-      setErrors((prevErrors) => ({ ...prevErrors, [id]: undefined }));
+      setErrors((prev) => ({ ...prev, [id]: undefined }));
     }
   };
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required.";
-    }
+
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email address is invalid.";
     }
-    if (!formData.message.trim()) {
-      newErrors.message = "Message is required.";
-    }
+    if (!formData.message.trim()) newErrors.message = "Message is required.";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setStatus("idle");
+    e.preventDefault();
 
-  if (!validateForm()) {
-    return;
-  }
+    setStatus(initialStatus);
+    if (!validateForm()) return;
 
-  setStatus("submitting");
-  setErrors({});
+    setStatus("submitting");
+    setErrors({});
 
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzUa2I8JOAjKYyJsdcGQ-CqvRExeaWdJflXBgh7MOtP_AitYtCSUr3RteJTgiUO0OoX/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyeyXPfXSIk3YGOY2spEUOAGtDMe5uHqVC8vKkzxVnGNrk9Eu2Ii6y7pEjwcp1fuOU/exec";
 
-  try {
-    await fetch(scriptURL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    setStatus("success");
-    setFormData({ name: "", email: "", message: "" });
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    setStatus("error");
-  }
-};
+      // Since Google Apps Script may not allow CORS,
+      // assume success if no error thrown (fallback style)
+      if (!response.ok && response.status !== 0) {
+        throw new Error("Network response was not ok");
+      }
 
-      // Since no-cors doesn't give us access to the response status or body,
-      // we'll assume success if no error is thrown
       setStatus("success");
-      setFormData({ name: "", email: "", message: "" }); // Clear form
+      setFormData(initialFormData);
     } catch (error) {
       console.error("Error submitting form:", error);
       setStatus("error");
-      // Optionally set a general error message
-      // setErrors({ form: "An error occurred. Please try again later." });
     }
   };
 
   return (
     <section className="bg-white py-20" id="contact">
       <div className="container mx-auto px-6">
-        <motion.h2 
+        {/* Heading */}
+        <motion.h2
           className="text-5xl font-righteous font-bold text-center text-black mb-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,8 +120,9 @@ const Contact = () => {
         >
           Get in Touch
         </motion.h2>
-        
-        <motion.p 
+
+        {/* Subheading */}
+        <motion.p
           className="text-xl font-marker text-center text-primary mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -140,118 +132,113 @@ const Contact = () => {
           Visit Us or Get Your Burger Fix! 🍔
         </motion.p>
 
-        {/* Contact Info Grid */}
+        {/* Contact Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {contactInfo.map((info, index) => (
             <motion.a
               href={info.link}
               key={index}
-              className="bg-white border-2 border-primary/20 p-6 rounded-xl text-center group 
-                         hover:border-primary transition-colors duration-300 shadow-lg flex flex-col items-center justify-start"
+              target={info.title.includes("Location") || info.title === "Instagram" ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              className="group bg-white border-2 border-primary/20 hover:border-primary transition-colors duration-300 p-6 rounded-xl shadow-lg flex flex-col items-center text-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
               whileHover={{ scale: 1.05 }}
-              target={info.title.includes("Location") || info.title === "Instagram" ? "_blank" : undefined}
-              rel={info.title.includes("Location") || info.title === "Instagram" ? "noopener noreferrer" : undefined}
             >
-              <div className="text-primary mb-4 transform group-hover:scale-110 transition-transform duration-300">
+              <div className="text-primary mb-4 group-hover:scale-110 transition-transform duration-300">
                 {info.icon}
               </div>
-              <h3 className="text-xl font-righteous text-black mb-2">
-                {info.title}
-              </h3>
-              <p className="font-marker text-gray-600">
-                {info.details}
-              </p>
+              <h3 className="text-xl font-righteous text-black mb-2">{info.title}</h3>
+              <p className="font-marker text-gray-600">{info.details}</p>
             </motion.a>
           ))}
         </div>
 
-        {/* Contact Form */}
-        <motion.form 
-          className="mt-16 max-w-2xl mx-auto"
+        {/* Form */}
+        <motion.form
           onSubmit={handleSubmit}
+          className="mt-16 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
+          {/* Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Name */}
             <div>
-              <label className="block font-righteous text-black mb-2" htmlFor="name">
+              <label htmlFor="name" className="block font-righteous text-black mb-2">
                 Name <span className="text-red-500">*</span>
               </label>
               <input
-                type="text"
                 id="name"
+                type="text"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full bg-white border-2 rounded-lg p-3 
-                         text-black font-marker placeholder-gray-400
-                         focus:border-primary focus:outline-none transition-colors 
-                         ${errors.name ? "border-red-500" : "border-primary/20"}`}
                 placeholder="Your name"
-                aria-invalid={errors.name ? "true" : "false"}
+                className={`w-full p-3 rounded-lg border-2 font-marker placeholder-gray-400 transition-colors
+                  ${errors.name ? "border-red-500" : "border-primary/20 focus:border-primary"}`}
+                aria-invalid={!!errors.name}
                 aria-describedby={errors.name ? "name-error" : undefined}
               />
               {errors.name && <p id="name-error" className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
+
+            {/* Email */}
             <div>
-              <label className="block font-righteous text-black mb-2" htmlFor="email">
+              <label htmlFor="email" className="block font-righteous text-black mb-2">
                 Email <span className="text-red-500">*</span>
               </label>
               <input
-                type="email"
                 id="email"
+                type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full bg-white border-2 rounded-lg p-3 
-                         text-black font-marker placeholder-gray-400
-                         focus:border-primary focus:outline-none transition-colors 
-                         ${errors.email ? "border-red-500" : "border-primary/20"}`}
                 placeholder="your@email.com"
-                aria-invalid={errors.email ? "true" : "false"}
+                className={`w-full p-3 rounded-lg border-2 font-marker placeholder-gray-400 transition-colors
+                  ${errors.email ? "border-red-500" : "border-primary/20 focus:border-primary"}`}
+                aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? "email-error" : undefined}
               />
               {errors.email && <p id="email-error" className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
           </div>
-          
+
+          {/* Message */}
           <div className="mb-6">
-            <label className="block font-righteous text-black mb-2" htmlFor="message">
+            <label htmlFor="message" className="block font-righteous text-black mb-2">
               Message <span className="text-red-500">*</span>
             </label>
             <textarea
               id="message"
-              rows={4}
               value={formData.message}
               onChange={handleChange}
-              className={`w-full bg-white border-2 rounded-lg p-3 
-                       text-black font-marker placeholder-gray-400
-                       focus:border-primary focus:outline-none transition-colors 
-                       ${errors.message ? "border-red-500" : "border-primary/20"}`}
               placeholder="Your message..."
-              aria-invalid={errors.message ? "true" : "false"}
+              rows={4}
+              className={`w-full p-3 rounded-lg border-2 font-marker placeholder-gray-400 transition-colors
+                ${errors.message ? "border-red-500" : "border-primary/20 focus:border-primary"}`}
+              aria-invalid={!!errors.message}
               aria-describedby={errors.message ? "message-error" : undefined}
             />
             {errors.message && <p id="message-error" className="text-red-500 text-sm mt-1">{errors.message}</p>}
           </div>
 
           {/* Status Messages */}
-          <div className="mb-4 h-6 text-center">
+          <div className="mb-4 text-center h-6">
             {status === "submitting" && <p className="text-primary">Sending message...</p>}
             {status === "success" && <p className="text-green-600">Message sent successfully!</p>}
             {status === "error" && <p className="text-red-600">Failed to send message. Please try again.</p>}
           </div>
 
+          {/* Submit Button */}
           <motion.button
             type="submit"
             disabled={status === "submitting"}
-            className="w-full bg-black text-primary font-righteous py-3 px-6 rounded-lg
-                     hover:bg-primary hover:text-black transition-colors border-2 border-primary
-                     disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 px-6 rounded-lg font-righteous border-2 border-primary 
+                       bg-black text-primary hover:bg-primary hover:text-black transition-colors
+                       disabled:opacity-50 disabled:cursor-not-allowed"
             whileHover={status !== "submitting" ? { scale: 1.02 } : {}}
             whileTap={status !== "submitting" ? { scale: 0.98 } : {}}
           >
@@ -264,4 +251,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
