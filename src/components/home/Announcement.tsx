@@ -1,84 +1,73 @@
 import { motion } from "framer-motion";
-import { FaTruckMoving, FaBullhorn } from "react-icons/fa";
 
 const Announcement = () => {
   return (
-    <section 
-      className="relative py-20 lg:py-32 bg-cover bg-center bg-fixed text-white overflow-hidden"
-      style={{ backgroundImage: "url(\"/images/bg4.jpg\")" }} // Using bg4.jpg as background
-    >
-      {/* Dark Overlay for readability */}
-      <div className="absolute inset-0 bg-black/60 z-0"></div>
-
-      <div className="container mx-auto px-6 text-center relative z-10">
-
-        {/* Animated Icon */}
-        <motion.div
-          className="text-6xl text-primary mb-6 inline-block"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-        >
-          <FaBullhorn />
-        </motion.div>
+    <section className="bg-white text-black py-20 relative overflow-hidden">
+      <div className="container mx-auto px-6 text-center">
 
         {/* Heading */}
         <motion.h2
-          className="text-5xl lg:text-6xl font-righteous mb-4 text-white drop-shadow-lg"
+          className="text-5xl font-righteous mb-6 text-primary"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
+          transition={{ duration: 1 }}
         >
-          Big News! We're Growing! 🚚
+          We're Growing! 🚚
         </motion.h2>
-        <motion.div 
-          className="w-24 h-1 bg-primary mx-auto rounded-full mb-8"
-          initial={{ width: 0 }}
-          animate={{ width: 96 }}
-          transition={{ duration: 1.2, delay: 0.4 }}
-        />
 
-        {/* Text Content */}
+        {/* Small Text */}
         <motion.p
-          className="text-xl lg:text-2xl font-marker text-white/90 mb-10 max-w-3xl mx-auto drop-shadow-md"
+          className="text-lg font-marker text-gray-600 mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.6 }}
+          transition={{ duration: 1.2 }}
         >
-          Get ready! Our brand new food truck is hitting the streets this week, bringing even more delicious AJ Burgers closer to you!
+          Our brand new food truck is launching this week! Get ready for more delicious burgers!
         </motion.p>
 
-        {/* Call-to-Action Button */}
+        {/* Image Card */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.4, delay: 0.8 }}
+          className="relative bg-gray-100 rounded-2xl shadow-2xl overflow-hidden max-w-4xl mx-auto"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.4 }}
         >
-          <motion.a
-            href="https://www.instagram.com/ajburgers_/reel/DI59fMeJzG7" // Assuming this link is still relevant
+          <img
+            src="/images/anou.jpg"
+            alt="AJ Burgers New Truck Announcement"
+            className="w-full h-auto object-cover"
+          />
+        </motion.div>
+
+        {/* Call-to-Action */}
+        <motion.div
+          className="mt-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.6 }}
+        >
+          <a
+            href="https://www.instagram.com/ajburgers_/reel/DI59fMeJzG7"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-primary text-black font-bold px-10 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all transform hover:scale-105"
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 10px 25px -5px rgba(249, 115, 22, 0.4)"
-            }}
-            whileTap={{ scale: 0.98 }}
+            className="inline-block px-8 py-4 bg-primary text-black font-righteous rounded-full hover:bg-primary/90 transition duration-300"
           >
-            <FaTruckMoving />
-            <span>Watch the Teaser</span>
-          </motion.a>
+            Watch the Trailer
+          </a>
         </motion.div>
       </div>
 
-      {/* Optional: Subtle decorative elements if needed */}
-      {/* Example: 
-      <motion.div 
-        className="absolute bottom-10 left-10 w-20 h-20 border-4 border-primary/30 rounded-full -z-1"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      /> 
-      */}
+      {/* Light Floating Circles Decoration */}
+      <motion.div
+        className="absolute top-0 left-0 w-32 h-32 bg-primary rounded-full opacity-10 blur-3xl"
+        animate={{ scale: [1, 1.5, 1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-0 right-0 w-48 h-48 bg-primary rounded-full opacity-10 blur-3xl"
+        animate={{ scale: [1, 1.5, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
     </section>
   );
 };
