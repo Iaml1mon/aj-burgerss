@@ -68,7 +68,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="md:hidden text-white"
+            className="md:hidden text-black"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             whileTap={{ scale: 0.95 }}
           >
