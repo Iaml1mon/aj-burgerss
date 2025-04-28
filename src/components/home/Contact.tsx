@@ -85,19 +85,29 @@ const Contact = () => {
   setStatus("submitting");
   setErrors({}); // Clear previous errors
 
-  // Google Apps Script Web App URL provided by the user
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzA4S83cX5a8We9yrAcjzHf67ERxGqDPincx-h_vEy7COxEL_oUbMjteJDuRwP_VEsw/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxme80yVAeKZ_YcTHoJAvE-t9N7APQUe4E6L_RRmb9EGdh-_PoXNkAoDW0WTD3VGiav/exec";
 
   try {
-    await fetch(scriptURL, {
+    const response = await fetch(scriptURL, {
       method: "POST",
-      mode: "no-cors", // Change to no-cors to avoid preflight issues
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
 
+    if (response.ok) {
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" }); // Clear form
+    } else {
+      console.error("Server responded with an error:", response.statusText);
+      setStatus("error");
+    }
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    setStatus("error");
+  }
+};
     // Since no-cors doesn't give us access to the response status or body,
     // we'll assume success if no error is thrown
     setStatus("success");
