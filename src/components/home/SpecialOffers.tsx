@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const SpecialOffers = () => {
   return (
-    <section className="relative py-16 lg:py-24 bg-gradient-to-b from-white to-orange-50 overflow-hidden">
+    <section className="relative py-16 lg:py-24 overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 flex flex-col items-center text-center gap-8">
 
         {/* Heading */}
