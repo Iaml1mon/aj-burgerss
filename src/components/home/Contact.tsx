@@ -87,11 +87,15 @@ const Contact = () => {
     const scriptURL = "https://script.google.com/macros/s/AKfycbyeyXPfXSIk3YGOY2spEUOAGtDMe5uHqVC8vKkzxVnGNrk9Eu2Ii6y7pEjwcp1fuOU/exec";
 
     try {
-      const response = await fetch(scriptURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+     const form = new FormData();
+form.append("name", formData.name);
+form.append("email", formData.email);
+form.append("message", formData.message);
+
+const response = await fetch(scriptURL, {
+  method: "POST",
+  body: form,
+});
 
       // Since Google Apps Script may not allow CORS,
       // assume success if no error thrown (fallback style)
