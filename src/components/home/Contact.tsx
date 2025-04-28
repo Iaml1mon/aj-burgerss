@@ -78,29 +78,29 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setStatus(initialStatus);
+    setStatus("idle");
     if (!validateForm()) return;
 
     setStatus("submitting");
     setErrors({});
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyeyXPfXSIk3YGOY2spEUOAGtDMe5uHqVC8vKkzxVnGNrk9Eu2Ii6y7pEjwcp1fuOU/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyzlqccBUa_Zo3JbWIkc83m-kyXhzWJoyLi2ywGXS5kONvoxjlkL1AyYxEig8szA_0_/exec";
 
     try {
-     const form = new FormData();
-form.append("name", formData.name);
-form.append("email", formData.email);
-form.append("message", formData.message);
+      const form = new FormData();
+      form.append("name", formData.name);
+      form.append("email", formData.email);
+      form.append("message", formData.message);
 
-const response = await fetch(scriptURL, {
-  method: "POST",
-  body: form,
-});
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: form,
+      });
 
-      // Since Google Apps Script may not allow CORS,
-      // assume success if no error thrown (fallback style)
-      if (!response.ok && response.status !== 0) {
-        throw new Error("Network response was not ok");
+      if (!response.ok) {
+        const errorDetails = await response.text();
+        console.error("Error submitting form:", errorDetails);
+        throw new Error(`Form submission failed: ${response.status}`);
       }
 
       setStatus("success");
