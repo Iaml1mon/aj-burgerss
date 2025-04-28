@@ -86,7 +86,7 @@ const Contact = () => {
     setErrors({}); // Clear previous errors
 
     // Updated Google Apps Script Web App URL provided by the user
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxsZFwOARqJG8goIgl3SN_Fl_3ajQb1nCeKjdyFoCevV94P1ENEE_SfTSMKhfbcqP-8/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzmMymu62H9bohvk9pnvmQPZp_mk4nYgbY5F1CHXpuvGZ-Ucot3cH3OpBg3OiEZLAWk/exec";
 
     try {
       await fetch(scriptURL, {
