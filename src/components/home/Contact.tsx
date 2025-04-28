@@ -75,28 +75,35 @@ const Contact = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("idle"); // Reset status on new submission attempt
+  e.preventDefault();
+  setStatus("idle");
 
-    if (!validateForm()) {
-      return; // Stop submission if validation fails
-    }
+  if (!validateForm()) {
+    return;
+  }
 
-    setStatus("submitting");
-    setErrors({}); // Clear previous errors
+  setStatus("submitting");
+  setErrors({});
 
-    // Updated Google Apps Script Web App URL provided by the user
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyeyXPfXSIk3YGOY2spEUOAGtDMe5uHqVC8vKkzxVnGNrk9Eu2Ii6y7pEjwcp1fuOU/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzUa2I8JOAjKYyJsdcGQ-CqvRExeaWdJflXBgh7MOtP_AitYtCSUr3RteJTgiUO0OoX/exec";
 
-    try {
-      await fetch(scriptURL, {
-        method: "POST",
-        mode: "no-cors", // Change to no-cors to avoid preflight issues
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  try {
+    await fetch(scriptURL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    setStatus("success");
+    setFormData({ name: "", email: "", message: "" });
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    setStatus("error");
+  }
+};
 
       // Since no-cors doesn't give us access to the response status or body,
       // we'll assume success if no error is thrown
