@@ -75,48 +75,36 @@ const Contact = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setStatus("idle"); // Reset status on new submission attempt
+    e.preventDefault();
+    setStatus("idle"); // Reset status on new submission attempt
 
-  if (!validateForm()) {
-    return; // Stop submission if validation fails
-  }
+    if (!validateForm()) {
+      return; // Stop submission if validation fails
+    }
 
-  setStatus("submitting");
-  setErrors({}); // Clear previous errors
+    setStatus("submitting");
+    setErrors({}); // Clear previous errors
 
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxme80yVAeKZ_YcTHoJAvE-t9N7APQUe4E6L_RRmb9EGdh-_PoXNkAoDW0WTD3VGiav/exec";
+    // Google Apps Script Web App URL provided by the user
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxme80yVAeKZ_YcTHoJAvE-t9N7APQUe4E6L_RRmb9EGdh-_PoXNkAoDW0WTD3VGiav/exec";
 
-  try {
-    const response = await fetch(scriptURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      await fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors", // Change to no-cors to avoid preflight issues
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    if (response.ok) {
+      // Since no-cors doesn't give us access to the response status or body,
+      // we'll assume success if no error is thrown
       setStatus("success");
       setFormData({ name: "", email: "", message: "" }); // Clear form
-    } else {
-      console.error("Server responded with an error:", response.statusText);
+    } catch (error) {
+      console.error("Error submitting form:", error);
       setStatus("error");
-    }
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    setStatus("error");
-  }
-};
-    // Since no-cors doesn't give us access to the response status or body,
-    // we'll assume success if no error is thrown
-    setStatus("success");
-    setFormData({ name: "", email: "", message: "" }); // Clear form
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    setStatus("error");
-  }
-};
       // Optionally set a general error message
       // setErrors({ form: "An error occurred. Please try again later." });
     }
